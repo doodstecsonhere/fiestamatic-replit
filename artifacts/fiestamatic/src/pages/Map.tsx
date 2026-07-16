@@ -21,7 +21,7 @@ const createPinIcon = (color: string) => L.divIcon({
 // Distinctly different colors with strong contrast between them
 const RED_ICON    = createPinIcon('#c41a1a'); // Deep crimson red — clearly red
 const ORANGE_ICON = createPinIcon('#e87c1e'); // Warm amber-orange — clearly orange
-const YELLOW_ICON = createPinIcon('#c9930a'); // Rich gold — clearly yellow
+const YELLOW_ICON = createPinIcon('#f5c518'); // Bright golden yellow — clearly distinct
 
 export default function MapPage() {
   const [selectedBarangay, setSelectedBarangay] = useState<BarangayData | null>(null);
@@ -64,8 +64,8 @@ export default function MapPage() {
             </span>
             <span className="flex items-center gap-1.5 text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
               {/* Gold swatch */}
-              <span className="w-3 h-3 rounded-full inline-block shadow-sm" style={{ backgroundColor: '#c9930a' }}></span>
-              <span style={{ color: '#c9930a' }}>Later</span>
+              <span className="w-3 h-3 rounded-full inline-block shadow-sm" style={{ backgroundColor: '#f5c518' }}></span>
+              <span style={{ color: '#b08800' }}>Later</span>
             </span>
           </div>
         </div>

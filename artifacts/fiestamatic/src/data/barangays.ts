@@ -22,7 +22,7 @@ export const BARANGAYS = [
   { barangay: "Daro", address: "Narra, Dumaguete City, Negros Oriental", latitude: 9.318, longitude: 123.301, fiesta: "January 2nd Saturday" },
   { barangay: "Junob", address: "Jose Romero Road, Dumaguete City, Negros Oriental", latitude: 9.296, longitude: 123.284, fiesta: "May 3" },
   { barangay: "Looc", address: "8876+M33, Dumaguete City, Negros Oriental", latitude: 9.314, longitude: 123.314, fiesta: "June 24" },
-  { barangay: "Mangnao-Canal", address: "77VX+FGQ, Bagacay-Mangnao Rd, Dumaguete City, Negros Oriental", latitude: 9.289, longitude: 123.303, fiesta: "April 5" },
+  { barangay: "Mangnao", address: "77VX+FGQ, Bagacay-Mangnao Rd, Dumaguete City, Negros Oriental", latitude: 9.289, longitude: 123.303, fiesta: "April 5" },
   { barangay: "Motong", address: "Larena Drive, 879Q+4XF, Motong Rd, Dumaguete City, Negros Oriental", latitude: 9.324, longitude: 123.294, fiesta: "October 7" },
   { barangay: "Piapi", address: "88C4+G6J, E J. Blanco Dr, Dumaguete City, Negros Oriental", latitude: 9.321, longitude: 123.314, fiesta: "June 28" },
   { barangay: "Pulantubig", address: "87FQ+P7J, L. Rovira Rd, Dumaguete City, Negros Oriental", latitude: 9.326, longitude: 123.293, fiesta: "May 15" },

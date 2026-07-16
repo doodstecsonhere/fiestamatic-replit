@@ -3,13 +3,15 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Fiestamatic API - Dumaguete City fiesta navigator
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: community
+    description: Bayanihan community board operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,88 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /community/posts:
+    get:
+      operationId: getCommunityPosts
+      tags: [community]
+      summary: List community board posts
+      description: Returns all Bayanihan community posts sorted by newest first
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [carpool, shared_table, general]
+          description: Filter by post type
+      responses:
+        "200":
+          description: List of community posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CommunityPost"
+    post:
+      operationId: createCommunityPost
+      tags: [community]
+      summary: Create a community post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommunityPostInput"
+      responses:
+        "201":
+          description: Created post
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunityPost"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /community/posts/{id}:
+    delete:
+      operationId: deleteCommunityPost
+      tags: [community]
+      summary: Delete a community post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /community/summary:
+    get:
+      operationId: getCommunitySummary
+      tags: [community]
+      summary: Get community board summary stats
+      responses:
+        "200":
+          description: Summary stats for the community board
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommunitySummary"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +118,76 @@ components:
       required:
         - status
 
+    CommunityPost:
+      type: object
+      required: [id, author_name, post_type, barangay, message, created_at]
+      properties:
+        id:
+          type: integer
+        author_name:
+          type: string
+        post_type:
+          type: string
+          enum: [carpool, shared_table, general]
+        barangay:
+          type: string
+          description: Target barangay for the fiesta visit
+        message:
+          type: string
+        contact_info:
+          type: ["string", "null"]
+        seats_available:
+          type: ["integer", "null"]
+          description: For carpool posts, number of available seats
+        created_at:
+          type: string
+          format: date-time
+
+    CommunityPostInput:
+      type: object
+      required: [author_name, post_type, barangay, message]
+      properties:
+        author_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        post_type:
+          type: string
+          enum: [carpool, shared_table, general]
+        barangay:
+          type: string
+          minLength: 1
+        message:
+          type: string
+          minLength: 1
+          maxLength: 500
+        contact_info:
+          type: string
+          maxLength: 200
+        seats_available:
+          type: integer
+          minimum: 1
+          maximum: 20
+
+    CommunitySummary:
+      type: object
+      required: [total_posts, carpool_posts, shared_table_posts, general_posts, active_barangays]
+      properties:
+        total_posts:
+          type: integer
+        carpool_posts:
+          type: integer
+        shared_table_posts:
+          type: integer
+        general_posts:
+          type: integer
+        active_barangays:
+          type: integer
+          description: Number of distinct barangays with posts
+
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string

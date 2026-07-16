@@ -1,0 +1,268 @@
+You are building a mobile-first web application called "Fiestamatic". 
+Tagline: "Basta fiesta, 'matic na!"
+Purpose: A Dumaguete City fiesta navigator app that promotes local tourism, education, neighborliness, and community social bonds (bayanihan).
+
+Tech Stack: React, Tailwind CSS, Lucide React (icons), and Leaflet (OpenStreetMap) for mapping (do not use Google Maps to avoid API key blockers).
+
+CORE FEATURES REQUIRED:
+1. Dynamic Countdown & Chronological Sorting: The home screen must display an auto-sorting dashboard showing the closest upcoming barangay fiestas based on the current date. 
+2. Interactive Map: A map plotting all barangays. Tapping a pin reveals a quick card with the fiesta date and an action button to navigate to the location.
+3. Search & Filter: Users can search by Barangay name or filter by "Happening this Month", "Upcoming", or "Poblacion vs Outer Barangays".
+4. Educational Drawer (Optional Component): Clicking a Barangay card opens a beautiful slide-up bottom drawer. It displays:
+   - Barangay Name, Fiesta Date, and Hall Coordinates.
+   - A section for "Name Origin" (Placeholder text to be filled later).
+   - A section for "Patron Saint & Traditions" (Placeholder text to be filled later).
+5. Bayanihan Community Board: A dedicated tab for "Fiesta Carpooling & Shared Tables" to encourage neighborly connection, coordinate visits, and foster local community relationships.
+
+---
+CRITICAL ARCHITECTURAL REQUIREMENT (Date Normalization Engine):
+The data contains floating dates (e.g., "May 1st Saturday", "January 3rd Sunday") and dual dates ("April 5 or October 7"). 
+You MUST implement a JavaScript utility function (`getOrCreateFiestaDate(fiestaString, currentYear)`) that parses these strings into concrete JavaScript Date objects for the current calendar year, allowing the app to successfully sort the timeline chronologically and calculate accurate countdowns (e.g., "Happening in 4 days"). For dual dates, select the one closest to the current date.
+---
+
+DATASET TO EMBED DIRECTLY INTO THE APP:
+[
+  {
+    "barangay": "Poblacion 1 (Tinago)",
+    "place_id": "ChIJkeMga9xuqzMRIugZC4xtjho",
+    "address": "Poblacion 1 brgy, Dumaguete City, Negros Oriental",
+    "latitude": 9.308,
+    "longitude": 123.311,
+    "fiesta": "May 1st Saturday"
+  },
+  {
+    "barangay": "Poblacion 2 (Upper Luke Wright)",
+    "place_id": "ChIJp1sYFGZvqzMRFjo6ubO2XZI",
+    "address": "8824+VMQ, Dumaguete City, Negros Oriental",
+    "latitude": 9.309,
+    "longitude": 123.308,
+    "fiesta": "May 13"
+  },
+  {
+    "barangay": "Poblacion 3 (Business District)",
+    "place_id": "ChIJdRHja95uqzMRNrWzlut7Ukg",
+    "address": "15 Lorenzo, Manuel L. Teves St, Dumaguete City, Negros Oriental",
+    "latitude": 9.307,
+    "longitude": 123.307,
+    "fiesta": "November 25"
+  },
+  {
+    "barangay": "Poblacion 4 (Rizal Boulevard)",
+    "place_id": "ChIJ7TV7VOduqzMRYdhfj7zTiGA",
+    "address": "8845+HRF, Bishop Epifanio Surban St, Dumaguete City, Negros Oriental",
+    "latitude": 9.306,
+    "longitude": 123.311,
+    "fiesta": "November 25"
+  },
+  {
+    "barangay": "Poblacion 5 (Silliman Area)",
+    "place_id": "ChIJzXp6vsdvqzMR8rYuQj6igUw",
+    "address": "Room 1, 2nd Floor, Agueda Dionaldo Bldg, Perdices St, Dumaguete City, Negros Oriental",
+    "latitude": 9.311,
+    "longitude": 123.307,
+    "fiesta": "November 25"
+  },
+  {
+    "barangay": "Poblacion 6 (Cambagroy)",
+    "place_id": "ChIJ2wSrT9dvqzMRZPNkNfo0K0U",
+    "address": "2nd Floor, Twin Arcade Bldg, Perdices St, Dumaguete City, Negros Oriental",
+    "latitude": 9.312,
+    "longitude": 123.306,
+    "fiesta": "May Last Saturday"
+  },
+  {
+    "barangay": "Poblacion 7 (Mangga)",
+    "place_id": "ChIJJ2i_O-BuqzMRDRHIFziSIeU",
+    "address": "80 Jose Pro Teves Street, corner San Jose Ext, Dumaguete City, Negros Oriental",
+    "latitude": 9.304,
+    "longitude": 123.305,
+    "fiesta": "January 4th Sunday"
+  },
+  {
+    "barangay": "Poblacion 8 (Cervantes)",
+    "place_id": "ChIJU-O5bd9uqzMRxJntHbFsF9k",
+    "address": "8833+CWQ, JP Teves St, Dumaguete City, Negros Oriental",
+    "latitude": 9.308,
+    "longitude": 123.306,
+    "fiesta": "November 25"
+  },
+  {
+    "barangay": "Bagacay",
+    "place_id": "ChIJQ5SLOyVvqzMR-Mv_MUsy2WQ",
+    "address": "77XR+2PW, Jose Romero Road, Dumaguete City, Negros Oriental",
+    "latitude": 9.299,
+    "longitude": 123.295,
+    "fiesta": "September 29"
+  },
+  {
+    "barangay": "Bajumpandan",
+    "place_id": "ChIJ__O6VXJpqzMRoKhnRipNGso",
+    "address": "Bajumpandan, Dumaguete City, Negros Oriental",
+    "latitude": 9.278,
+    "longitude": 123.279,
+    "fiesta": "April 5"
+  },
+  {
+    "barangay": "Balugo",
+    "place_id": "ChIJX1vH46pvqzMR3kUu9yZ1PAc",
+    "address": "Dumaguete City, Negros Oriental",
+    "latitude": 9.318,
+    "longitude": 123.259,
+    "fiesta": "October 27"
+  },
+  {
+    "barangay": "Banilad",
+    "place_id": "ChIJR0eskTdpqzMRP1DjR0tQ3lU",
+    "address": "77MW+53V, Sto Niño Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.274,
+    "longitude": 123.301,
+    "fiesta": "January 3rd Saturday"
+  },
+  {
+    "barangay": "Bantayan",
+    "place_id": "ChIJITtWRlNuqzMROzR5ngz_WYU",
+    "address": "88J3+MR4, Dumaguete City, Negros Oriental",
+    "latitude": 9.324,
+    "longitude": 123.313,
+    "fiesta": "January 3rd Sunday"
+  },
+  {
+    "barangay": "Batinguel",
+    "place_id": "ChIJq9axsxdvqzMROzXV3T1GeMs",
+    "address": "875Q+XX3, Dumaguete City, Negros Oriental",
+    "latitude": 9.304,
+    "longitude": 123.294,
+    "fiesta": "May 19"
+  },
+  {
+    "barangay": "Buñao",
+    "place_id": "ChIJK5Az4XVvqzMR3FG_9ESEqwk",
+    "address": "87HV+X97, Buñao Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.319,
+    "longitude": 123.296,
+    "fiesta": "October 1"
+  },
+  {
+    "barangay": "Cadawinonan",
+    "place_id": "ChIJh7RfeJ5vqzMRzveApsPNJ9w",
+    "address": "873C+93V, Dumaguete City, Negros Oriental",
+    "latitude": 9.301,
+    "longitude": 123.273,
+    "fiesta": "March 19"
+  },
+  {
+    "barangay": "Calindagan",
+    "place_id": "ChIJawQbbgBvqzMRGcR6IGrdlMo",
+    "address": "78X6+XHQ, Calindagan Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.301,
+    "longitude": 123.311,
+    "fiesta": "October 7"
+  },
+  {
+    "barangay": "Camanjac",
+    "place_id": "ChIJ24ilMHdvqzMRqp9a_nmx1p4",
+    "address": "87GC+2J9, W Rovira Dr, Dumaguete City, Negros Oriental",
+    "latitude": 9.332,
+    "longitude": 123.274,
+    "fiesta": "August 20"
+  },
+  {
+    "barangay": "Candau-ay",
+    "place_id": "ChIJk1UwIQBvqzMRQXnDH5583uQ",
+    "address": "8775+9MX, Dumaguete City, Negros Oriental",
+    "latitude": 9.311,
+    "longitude": 123.267,
+    "fiesta": "August 15"
+  },
+  {
+    "barangay": "Cantil-e",
+    "place_id": "ChIJq9b5FvNpqzMRpL334878hVc",
+    "address": "77JF+73F, Road, Dumaguete City, Negros Oriental",
+    "latitude": 9.281,
+    "longitude": 123.275,
+    "fiesta": "April 19"
+  },
+  {
+    "barangay": "Daro",
+    "place_id": "ChIJ17zuXAJvqzMR6n_dcxJjJxc",
+    "address": "Narra, Dumaguete City, Negros Oriental",
+    "latitude": 9.318,
+    "longitude": 123.301,
+    "fiesta": "January 2nd Saturday"
+  },
+  {
+    "barangay": "Junob",
+    "place_id": "ChIJvdc6cwBvqzMR5lcd7X8R9PE",
+    "address": "Jose Romero Road, Dumaguete City, Negros Oriental",
+    "latitude": 9.296,
+    "longitude": 123.284,
+    "fiesta": "May 3"
+  },
+  {
+    "barangay": "Looc",
+    "place_id": "ChIJTVGLe61vqzMRKFezawwkYT0",
+    "address": "8876+M33, Dumaguete City, Negros Oriental",
+    "latitude": 9.314,
+    "longitude": 123.314,
+    "fiesta": "June 24"
+  },
+  {
+    "barangay": "Mangnao-Canal",
+    "place_id": "ChIJnaLNDLZvqzMRMfwUkkZi4DU",
+    "address": "77VX+FGQ, Bagacay-Mangnao Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.289,
+    "longitude": 123.303,
+    "fiesta": "April 5"
+  },
+  {
+    "barangay": "Motong",
+    "place_id": "ChIJkSPh1Q9vqzMRYgEsAHejsps",
+    "address": "Larena Drive, 879Q+4XF, Motong Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.324,
+    "longitude": 123.294,
+    "fiesta": "October 7"
+  },
+  {
+    "barangay": "Piapi",
+    "place_id": "ChIJFbV3e_5uqzMR6TA2-pThejM",
+    "address": "88C4+G6J, E J. Blanco Dr, Dumaguete City, Negros Oriental",
+    "latitude": 9.321,
+    "longitude": 123.314,
+    "fiesta": "June 28"
+  },
+  {
+    "barangay": "Pulantubig",
+    "place_id": "ChIJk3hNi0lvqzMRdMibHTLmXC0",
+    "address": "87FQ+P7J, L. Rovira Rd, Dumaguete City, Negros Oriental",
+    "latitude": 9.326,
+    "longitude": 123.293,
+    "fiesta": "May 15"
+  },
+  {
+    "barangay": "Tabuc-tubig",
+    "place_id": "ChIJI1GFrdhuqzMReMEapjeaNxY",
+    "address": "8822+JJW, Dumaguete City, Negros Oriental",
+    "latitude": 9.301,
+    "longitude": 123.314,
+    "fiesta": "May 3"
+  },
+  {
+    "barangay": "Taclobo",
+    "place_id": "ChIJK49DOuBuqzMRURTtA4W-Nt8",
+    "address": "877Q+MQP, Dumaguete City, Negros Oriental",
+    "latitude": 9.311,
+    "longitude": 123.294,
+    "fiesta": "May 3"
+  },
+  {
+    "barangay": "Talay",
+    "place_id": "ChIJ0e6QxVRvqzMRWE8N1LQSNEE",
+    "address": "77V6+7RG, Dumaguete City, Negros Oriental",
+    "latitude": 9.295,
+    "longitude": 123.262,
+    "fiesta": "May 19"
+  }
+]
+
+DESIGN REQUIREMENT:
+Use a modern, vibrantly festive UI with warm tones (fiesta reds, warm oranges, sun yellows) but keep components highly readable and clean. The interface should feel welcoming and community-driven, maximizing ease of navigation for locals and tourists alike.

@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Fiestamatic"
+version = "1.0.0"
+id = "artifacts/fiestamatic"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25883
+
+[services.development]
+run = "pnpm --filter @workspace/fiestamatic run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/fiestamatic", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/fiestamatic/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25883"
+BASE_PATH = "/"

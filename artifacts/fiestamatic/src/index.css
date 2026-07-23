@@ -75,7 +75,7 @@
   
   --border: 30 20% 85%;
   --input: 30 20% 85%;
-  --ring: 14 90% 52%;
+  --ring: 0 90% 45%;
 
   --card: 36 50% 100%;
   --card-foreground: 20 50% 15%;
@@ -84,33 +84,33 @@
   --sidebar: 36 50% 97%;
   --sidebar-foreground: 20 50% 15%;
   --sidebar-border: 30 20% 85%;
-  --sidebar-primary: 14 90% 52%;
+  --sidebar-primary: 0 90% 45%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 30 30% 90%;
   --sidebar-accent-foreground: 20 50% 15%;
-  --sidebar-ring: 14 90% 52%;
+  --sidebar-ring: 0 90% 45%;
 
   --popover: 36 50% 100%;
   --popover-foreground: 20 50% 15%;
   --popover-border: 30 20% 90%;
 
-  --primary: 14 90% 52%; /* Fiesta Red-Orange */
+  --primary: 0 90% 45%; /* High-contrast Fiesta Red */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 45 93% 47%; /* Sun Yellow */
-  --secondary-foreground: 20 50% 15%;
+  --secondary: 43 100% 52%; /* Vibrant bright gold */
+  --secondary-foreground: 20 60% 10%;
 
   --muted: 30 20% 90%;
   --muted-foreground: 20 20% 40%;
 
-  --accent: 24 95% 53%; /* Warm Orange */
+  --accent: 24 95% 53%; /* Warm Orange accent */
   --accent-foreground: 0 0% 100%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 14 90% 52%;
-  --chart-2: 45 93% 47%;
+  --chart-1: 0 90% 45%;
+  --chart-2: 43 100% 52%;
   --chart-3: 24 95% 53%;
   --chart-4: 160 60% 45%;
   --chart-5: 280 65% 60%;
@@ -165,21 +165,21 @@
   --sidebar: 20 40% 10%;
   --sidebar-foreground: 36 50% 97%;
   --sidebar-border: 20 30% 20%;
-  --sidebar-primary: 14 90% 52%;
+  --sidebar-primary: 0 90% 45%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 20 30% 20%;
   --sidebar-accent-foreground: 36 50% 97%;
-  --sidebar-ring: 14 90% 52%;
+  --sidebar-ring: 0 90% 45%;
 
   --popover: 20 35% 12%;
   --popover-foreground: 36 50% 97%;
   --popover-border: 20 30% 20%;
 
-  --primary: 14 90% 52%;
+  --primary: 0 90% 45%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 45 93% 47%;
-  --secondary-foreground: 20 50% 15%;
+  --secondary: 43 100% 52%;
+  --secondary-foreground: 20 60% 10%;
 
   --muted: 20 30% 20%;
   --muted-foreground: 30 20% 70%;

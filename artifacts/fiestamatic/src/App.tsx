@@ -6,7 +6,7 @@ import Home from '@/pages/Home';
 import MapPage from '@/pages/Map';
 import Community from '@/pages/Community';
 import NotFound from '@/pages/not-found';
-import { Download, X } from 'lucide-react';
+import { Download, WifiOff, X } from 'lucide-react';
 
 const queryClient = new QueryClient();
 
@@ -76,9 +76,36 @@ function InstallBanner() {
   );
 }
 
+function OfflineBadge() {
+  const [offline, setOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const on = () => setOffline(false);
+    const off = () => setOffline(true);
+    window.addEventListener('online', on);
+    window.addEventListener('offline', off);
+    return () => {
+      window.removeEventListener('online', on);
+      window.removeEventListener('offline', off);
+    };
+  }, []);
+
+  if (!offline) return null;
+
+  return (
+    <div className="fixed top-3 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none animate-in fade-in slide-in-from-top-2 duration-300">
+      <div className="flex items-center gap-1.5 bg-foreground/90 backdrop-blur-md text-background text-[11px] font-bold uppercase tracking-wider px-3.5 py-2 rounded-full shadow-lg whitespace-nowrap">
+        <WifiOff className="w-3 h-3" />
+        Offline — Cached data
+      </div>
+    </div>
+  );
+}
+
 function Router() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <OfflineBadge />
       <div className="flex-1 w-full relative z-0">
         <Switch>
           <Route path="/" component={Home} />

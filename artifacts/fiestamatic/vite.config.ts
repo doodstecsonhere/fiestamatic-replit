@@ -72,10 +72,18 @@ export default defineConfig({
     fs: {
       strict: true,
     },
+    headers: {
+      // sw.js and manifest.json must never be cached indefinitely so browsers
+      // always fetch the latest copy and detect SW updates immediately.
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
   },
   preview: {
     port,
     host: '0.0.0.0',
     allowedHosts: true,
+    headers: {
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+    },
   },
 });

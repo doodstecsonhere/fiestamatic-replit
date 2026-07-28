@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
 import { BottomNav } from '@/components/Navigation';
@@ -6,9 +6,108 @@ import Home from '@/pages/Home';
 import MapPage from '@/pages/Map';
 import Community from '@/pages/Community';
 import NotFound from '@/pages/not-found';
-import { Download, WifiOff, X } from 'lucide-react';
+import { Download, RefreshCw, WifiOff, X } from 'lucide-react';
 
 const queryClient = new QueryClient();
+
+// ─── SW auto-update hook ──────────────────────────────────────────────────────
+// Flow:
+//   1. Register sw.js (no-cache fetch so the browser always gets the latest byte)
+//   2. Listen for SW_ACTIVATED postMessage from the new SW after it claims clients
+//   3. Also listen for controllerchange as a fallback trigger
+//   4. On either signal → show "Updating…" banner → reload after 1.5 s
+//   5. Periodic registration.update() every 60 min + on tab visibility change
+//      ensures installed PWA users detect deploys without reopening the app
+
+function useSWAutoUpdate(): boolean {
+  const [updateReady, setUpdateReady] = useState(false);
+  const registrationRef = useRef<ServiceWorkerRegistration | null>(null);
+  const reloadScheduled = useRef(false);
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator)) return;
+
+    let cancelled = false;
+
+    // Helper: schedule one reload, ignoring duplicate signals
+    const scheduleReload = () => {
+      if (reloadScheduled.current || cancelled) return;
+      reloadScheduled.current = true;
+      setUpdateReady(true);
+      setTimeout(() => {
+        if (!cancelled) window.location.reload();
+      }, 1500);
+    };
+
+    // Listen for the SW_ACTIVATED postMessage broadcast from sw.js activate event
+    const onMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'SW_ACTIVATED') scheduleReload();
+    };
+    navigator.serviceWorker.addEventListener('message', onMessage);
+
+    // controllerchange fires when a new SW takes control — belt-and-suspenders
+    const onControllerChange = () => scheduleReload();
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
+
+    // Register the SW, always fetching sw.js with no-cache so the browser
+    // detects byte-level changes on every registration attempt
+    navigator.serviceWorker
+      .register('/sw.js', { updateViaCache: 'none' })
+      .then((registration) => {
+        if (cancelled) return;
+        registrationRef.current = registration;
+
+        // Periodic update check every 60 minutes
+        const interval = setInterval(() => {
+          registration.update().catch(() => {});
+        }, 60 * 60 * 1000);
+
+        // Check for updates whenever the tab comes back into focus
+        const onVisibility = () => {
+          if (document.visibilityState === 'visible') {
+            registration.update().catch(() => {});
+          }
+        };
+        document.addEventListener('visibilitychange', onVisibility);
+
+        // Also do one immediate update check in case there's already a waiting SW
+        registration.update().catch(() => {});
+
+        return () => {
+          clearInterval(interval);
+          document.removeEventListener('visibilitychange', onVisibility);
+        };
+      })
+      .catch(() => {
+        // SW registration failed (dev HTTP, blocked origin, etc.) — silently ignore
+      });
+
+    return () => {
+      cancelled = true;
+      navigator.serviceWorker.removeEventListener('message', onMessage);
+      navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange);
+    };
+  }, []);
+
+  return updateReady;
+}
+
+// ─── Update banner ────────────────────────────────────────────────────────────
+
+function UpdateBanner({ visible }: { visible: boolean }) {
+  if (!visible) return null;
+  return (
+    <div className="fixed top-0 inset-x-0 z-[9998] animate-in slide-in-from-top-2 duration-300 pointer-events-none">
+      <div className="mx-3 mt-3 bg-foreground/95 backdrop-blur-md text-background rounded-2xl shadow-2xl px-4 py-3 flex items-center gap-3">
+        <RefreshCw className="w-4 h-4 shrink-0 animate-spin" />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-bold leading-tight">New version available!</p>
+          <p className="text-[11px] opacity-70 mt-0.5">Updating Fiestamatic…</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -103,8 +202,11 @@ function OfflineBadge() {
 }
 
 function Router() {
+  const updateReady = useSWAutoUpdate();
+
   return (
     <div className="flex flex-col min-h-[100dvh]">
+      <UpdateBanner visible={updateReady} />
       <OfflineBadge />
       <div className="flex-1 w-full relative z-0">
         <Switch>

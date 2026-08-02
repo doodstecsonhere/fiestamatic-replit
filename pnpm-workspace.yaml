@@ -163,3 +163,7 @@ overrides:
   js-yaml: ">=4.3.0"
   # [SECURITY] fast-uri >=3.1.4 fixes GHSA-v2hh-gcrm-f6hx (high) — transitive via orval>ajv
   fast-uri: ">=3.1.4"
+  # [SECURITY] postcss >=8.5.18 fixes GHSA-r28c-9q8g-f849 (high) — transitive via vite
+  postcss: ">=8.5.18"
+  # [SECURITY] brace-expansion >=5.0.8 fixes CVE-2026-14257 (high) — transitive via orval>typedoc>minimatch
+  brace-expansion: ">=5.0.8"

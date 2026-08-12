@@ -12,7 +12,7 @@
 //   OSM map tiles   : CacheFirst (tile cache, capped at 500)
 //   API             : NetworkOnly         — localStorage layer handles offline
 
-const APP_CACHE  = 'fiestamatic-app-v3';
+const APP_CACHE  = 'fiestamatic-app-v4';
 const TILE_CACHE = 'fiestamatic-tiles-v1';
 const FONT_CACHE = 'fiestamatic-fonts-v1';
 
@@ -101,10 +101,10 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 4. Navigation (HTML) — StaleWhileRevalidate: serve cached shell instantly,
-  //    fetch fresh copy in background (no white screen offline)
+  // 4. Navigation (HTML) — NetworkFirst: always pick up the latest deployed
+  //    index when online; use the cached shell only when offline.
   if (event.request.mode === 'navigate') {
-    event.respondWith(staleWhileRevalidate(event.request));
+    event.respondWith(networkFirstNavigation(event.request));
     return;
   }
 
@@ -136,17 +136,20 @@ async function cacheFirst(request, cacheName) {
   }
 }
 
-async function staleWhileRevalidate(request) {
+async function networkFirstNavigation(request) {
   const cache = await caches.open(APP_CACHE);
-  // Always return cached shell immediately so the app renders offline
-  const cached = await cache.match('/');
-  const fetchPromise = fetch(request)
-    .then((response) => {
-      if (response.ok) cache.put(request, response.clone());
-      return response;
-    })
-    .catch(() => null);
-  return cached || await fetchPromise || new Response('Offline', { status: 503 });
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response.ok) {
+      await cache.put(request, response.clone());
+      // Keep the app-shell fallback in sync with the latest HTML as well.
+      await cache.put('/', response.clone());
+    }
+    return response;
+  } catch {
+    const cached = await cache.match(request) || await cache.match('/');
+    return cached || new Response('Offline', { status: 503 });
+  }
 }
 
 async function tileStrategy(request) {

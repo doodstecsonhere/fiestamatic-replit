@@ -92,6 +92,7 @@ export default function MapPage() {
                 <Popup className="fiesta-popup border-none">
                   <div className="p-0.5">
                     <h3 className="font-display font-bold text-lg mb-1 leading-tight text-foreground">{m.barangay}</h3>
+                    <p className="text-xs leading-snug text-muted-foreground mb-2">{m.address}</p>
                     <p className="text-sm font-medium text-muted-foreground mb-3">{m.fiesta}</p>
                     <button
                       onClick={() => setSelectedBarangay(m)}

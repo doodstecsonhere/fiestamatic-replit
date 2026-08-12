@@ -61,7 +61,7 @@ export function BarangayDrawer({
                     Name Origin
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed bg-muted/50 p-3.5 rounded-xl border border-border/50">
-                    The origin of this barangay's name is being researched. Check back soon!
+                    {barangay.nameOrigin}
                   </p>
                 </div>
                 
@@ -71,7 +71,7 @@ export function BarangayDrawer({
                     Patron Saint & Traditions
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed bg-muted/50 p-3.5 rounded-xl border border-border/50">
-                    Information about the patron saint and local fiesta traditions will be added here.
+                    {barangay.patronSaintTraditions}
                   </p>
                 </div>
               </div>

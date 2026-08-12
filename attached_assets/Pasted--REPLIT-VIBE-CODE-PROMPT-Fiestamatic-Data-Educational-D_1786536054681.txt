@@ -1,0 +1,330 @@
+### REPLIT VIBE CODE PROMPT: Fiestamatic Data & Educational Drawer Enhancement
+
+You are updating the "Fiestamatic" PWA dataset and Educational Drawer component. 
+
+#### OBJECTIVES:
+1. Embed full historical "Name Origin" and "Patron Saint & Traditions" data for all 30 Dumaguete City barangays into the primary dataset (`src/data/barangays.ts` or equivalent).
+2. Update the `EducationalDrawer` component to render these detailed narrative sections dynamically instead of using placeholder text.
+3. Ensure exact display of full addresses instead of raw plus codes across all views.
+4. Maintain all existing date normalization logic (`getOrCreateFiestaDate`), high-contrast colors (vibrant gold, red, orange, maroon), offline local storage persistence, and Service Worker auto-update handlers.
+
+---
+
+### STEP 1: Update the Barangay Dataset (`src/data/barangays.ts`)
+
+Replace or enrich the `barangays` dataset array so that every item contains `nameOrigin` and `patronSaintTraditions`. Ensure barangay names, coordinates, addresses, and fiesta strings match the following canonical structure:
+
+```ts
+export interface BarangayData {
+  barangay: string;
+  place_id: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  fiesta: string;
+  nameOrigin: string;
+  patronSaintTraditions: string;
+}
+
+export const BARANGAYS: BarangayData[] = [
+  {
+    barangay: "Bagacay",
+    place_id: "ChIJQ5SLOyVvqzMR-Mv_MUsy2WQ",
+    address: "Jose Romero Road, Bagacay, Dumaguete City, Negros Oriental",
+    latitude: 9.299,
+    longitude: 123.295,
+    fiesta: "September 29",
+    nameOrigin: "Derived from the Visayan word 'Bagacay,' which refers to a specific species of small bamboo known for its thin, hollow trunks and long internodes. This plant was a unique feature of the locality during its early days, setting it apart from neighboring areas.",
+    patronSaintTraditions: "Under the spiritual protection of Archangel Saint Michael. It is one of the largest barrios in the city and serves as a major commercial hub, notably housing the Hypermart where residents from across Dumaguete and nearby Valencia often shop."
+  },
+  {
+    barangay: "Bajumpandan",
+    place_id: "ChIJ__O6VXJpqzMRoKhnRipNGso",
+    address: "Bajumpandan, Dumaguete City, Negros Oriental",
+    latitude: 9.278,
+    longitude: 123.279,
+    fiesta: "April 5",
+    nameOrigin: "Literally translates to the 'odor of Pandan,' a tropical plant common in Philippine forests. Spanish visitors noticed locals habitually smelling aromatic pandan leaves used while cooking rice to enhance its aroma and appetite.",
+    patronSaintTraditions: "Honors Sen. San Jose (Saint Joseph) with a fiesta every 4th Sunday of December. Additionally, holds a second religious celebration on April 19th dedicated to the Sagrada Familia (Holy Family)."
+  },
+  {
+    barangay: "Balugo",
+    place_id: "ChIJX1vH46pvqzMR3kUu9yZ1PAc",
+    address: "Balugo, Dumaguete City, Negros Oriental",
+    latitude: 9.318,
+    longitude: 123.259,
+    fiesta: "October 27",
+    nameOrigin: "Named after the 'Balugo' tree, which was once exclusively abundant in this specific location during early settlement.",
+    patronSaintTraditions: "Celebrates its annual fiesta on October 27th in honor of its patron, the Mother of Perpetual Help."
+  },
+  {
+    barangay: "Banilad",
+    place_id: "ChIJR0eskTdpqzMRP1DjR0tQ3lU",
+    address: "Sto. Niño Road, Banilad, Dumaguete City, Negros Oriental",
+    latitude: 9.274,
+    longitude: 123.301,
+    fiesta: "January 3rd Saturday",
+    nameOrigin: "Modification of the Visayan phrase 'Banig Alad' ('matting of fences'). Historically a passage for powerful floods that tore local fences apart, leaving them scattered like mats of debris. Spanish authorities later shortened it to 'Banilad'.",
+    patronSaintTraditions: "Patron saint is San Jose (Saint Joseph). Observes two fiesta dates: the 3rd Saturday of January and May 4th."
+  },
+  {
+    barangay: "Bantayan",
+    place_id: "ChIJITtWRlNuqzMROzR5ngz_WYU",
+    address: "Bantayan, Dumaguete City, Negros Oriental",
+    latitude: 9.324,
+    longitude: 123.313,
+    fiesta: "January 3rd Sunday",
+    nameOrigin: "Derived from the Visayan word meaning 'guarding place.' During the Spanish era, this location overlooking Tañon Strait was a strategic lookout point to spot approaching Moro pirate vessels and warn residents to evacuate.",
+    patronSaintTraditions: "Celebrates its fiesta in honor of the Santo Niño (Holy Child) every 3rd Sunday of January."
+  },
+  {
+    barangay: "Batinguel",
+    place_id: "ChIJq9axsxdvqzMROzXV3T1GeMs",
+    address: "Batinguel, Dumaguete City, Negros Oriental",
+    latitude: 9.304,
+    longitude: 123.294,
+    fiesta: "May 19",
+    nameOrigin: "Refers to a type of hard stone. Given because early inhabitants were known for fierce sectionalism and hostility toward outsiders, often stoning visitors. The name references both physical stones and their 'hardheaded' nature.",
+    patronSaintTraditions: "Patron saint is San Jose (Saint Joseph), with fiesta celebrations every May 19th."
+  },
+  {
+    barangay: "Buñao",
+    place_id: "ChIJK5Az4XVvqzMR3FG_9ESEqwk",
+    address: "Buñao Road, Buñao, Dumaguete City, Negros Oriental",
+    latitude: 9.319,
+    longitude: 123.296,
+    fiesta: "October 1",
+    nameOrigin: "Named after a local stream famous for exceptionally clean and clear water used for drinking and bathing. Believed to be an adulteration of an early Spanish term.",
+    patronSaintTraditions: "Honors Our Lady of Fatima as its patron, with festivities held every October 1st."
+  },
+  {
+    barangay: "Cadawinonan",
+    place_id: "ChIJh7RfeJ5vqzMRzveApsPNJ9w",
+    address: "Cadawinonan, Dumaguete City, Negros Oriental",
+    latitude: 9.301,
+    longitude: 123.273,
+    fiesta: "March 19",
+    nameOrigin: "Established during frequent migrations when residents from Dauin settled here. Formerly called 'Dawinonans,' settlers became known as 'Cadawinonan.'",
+    patronSaintTraditions: "Barangay fiesta is held every last Saturday of January in honor of the Santo Niño (Holy Child), with additional devotions on March 19."
+  },
+  {
+    barangay: "Calindagan",
+    place_id: "ChIJawQbbgBvqzMRGcR6IGrdlMo",
+    address: "Calindagan Road, Calindagan, Dumaguete City, Negros Oriental",
+    latitude: 9.301,
+    longitude: 123.311,
+    fiesta: "October 7",
+    nameOrigin: "Legend says the barrio was saved from bandits by magical spirit horses. An enchantress summoned horses that strided and leaped over the people ('Kabayong Naglindag lindag') to charge the invaders.",
+    patronSaintTraditions: "Honors Saint Rosario (Our Lady of the Rosary) with fiesta celebrations on October 7 and December 23."
+  },
+  {
+    barangay: "Camanjac",
+    place_id: "ChIJ24ilMHdvqzMRqp9a_nmx1p4",
+    address: "W. Rovira Drive, Camanjac, Dumaguete City, Negros Oriental",
+    latitude: 9.332,
+    longitude: 123.274,
+    fiesta: "August 20",
+    nameOrigin: "Derived from 'Camanhacan,' referring to the 'manhac'—large, rooster-like birds with distinct loud calls that once inhabited dense local forests.",
+    patronSaintTraditions: "Patron saint is St. Vicente Ferrer, celebrated every August 20th."
+  },
+  {
+    barangay: "Candau-ay",
+    place_id: "ChIJk1UwIQBvqzMRQXnDH5583uQ",
+    address: "Candau-ay, Dumaguete City, Negros Oriental",
+    latitude: 9.311,
+    longitude: 123.267,
+    fiesta: "August 15",
+    nameOrigin: "Rooted in the Visayan word 'away' ('fight'). Early history saw two rival groups in constant long-bolo warfare before achieving lasting peace.",
+    patronSaintTraditions: "Celebrates the Sambunot Festival and fiesta on August 15th and 16th in honor of Saint San Roque."
+  },
+  {
+    barangay: "Cantil-e",
+    place_id: "ChIJq9b5FvNpqzMRpL334878hVc",
+    address: "Cantil-e Road, Cantil-e, Dumaguete City, Negros Oriental",
+    latitude: 9.281,
+    longitude: 123.275,
+    fiesta: "April 19",
+    nameOrigin: "A portmanteau of 'CANTIL' (a rocky cliff or drop-off in a local creek) and early prominent resident 'Til-E'.",
+    patronSaintTraditions: "Honors the Virgin Mary of the Rosary on April 19th. Historical traditions include 'bayle' (benefit dances) and 'tabo' (market days)."
+  },
+  {
+    barangay: "Daro",
+    place_id: "ChIJ17zuXAJvqzMR6n_dcxJjJxc",
+    address: "Narra Street, Daro, Dumaguete City, Negros Oriental",
+    latitude: 9.318,
+    longitude: 123.301,
+    fiesta: "January 2nd Saturday",
+    nameOrigin: "'Daro' is Visayan for 'plow.' First area cleared of forest for agricultural development using native plows for sugar cane, coconut, and corn.",
+    patronSaintTraditions: "Celebrates the Darohanon Festival on February 27th in honor of patron Santo Niño (Holy Child)."
+  },
+  {
+    barangay: "Junob",
+    place_id: "ChIJvdc6cwBvqzMR5lcd7X8R9PE",
+    address: "Jose Romero Road, Junob, Dumaguete City, Negros Oriental",
+    latitude: 9.296,
+    longitude: 123.284,
+    fiesta: "May 3",
+    nameOrigin: "Visayan term for 'always wet or moist.' One-third of the barrio land remains damp throughout all seasons.",
+    patronSaintTraditions: "Honors two patrons: San Isidro Labrador and Santa Cruz (Holy Cross), with festivities on May 3rd and May 22nd."
+  },
+  {
+    barangay: "Looc",
+    place_id: "ChIJTVGLe61vqzMRKFezawwkYT0",
+    address: "Looc Marine Sanctuary Area, Looc, Dumaguete City, Negros Oriental",
+    latitude: 9.314,
+    longitude: 123.314,
+    fiesta: "June 24",
+    nameOrigin: "Visayan for the sharp curve of a beach forming a bay. Served as a natural safe harbor from bad weather and remains the site of the city's main seaport.",
+    patronSaintTraditions: "Honors Saint John as patron with festivities on March 15th and June 24th."
+  },
+  {
+    barangay: "Mangnao",
+    place_id: "ChIJnaLNDLZvqzMRMfwUkkZi4DU",
+    address: "Bagacay-Mangnao Road, Mangnao, Dumaguete City, Negros Oriental",
+    latitude: 9.289,
+    longitude: 123.303,
+    fiesta: "April 5",
+    nameOrigin: "Visayan term referring to extracting starch ('onao') by pounding and washing the trunk of 'Sac-Sac' palm trees.",
+    patronSaintTraditions: "Celebrates its fiesta on the 4th Sunday of January for Santo Niño and on April 5th for St. Vicente."
+  },
+  {
+    barangay: "Motong",
+    place_id: "ChIJkSPh1Q9vqzMRYgEsAHejsps",
+    address: "Larena Drive corner Motong Road, Motong, Dumaguete City, Negros Oriental",
+    latitude: 9.324,
+    longitude: 123.294,
+    fiesta: "October 7",
+    nameOrigin: "Visayan for 'champion' or 'unexcelled bravery,' named after inhabitants renowned for fierce combat character.",
+    patronSaintTraditions: "Celebrates fiesta on October 7th in honor of Nuestra Señora del Rosario (Our Lady of the Rosary)."
+  },
+  {
+    barangay: "Piapi",
+    place_id: "ChIJFbV3e_5uqzMR6TA2-pThejM",
+    address: "E.J. Blanco Drive, Piapi, Dumaguete City, Negros Oriental",
+    latitude: 9.321,
+    longitude: 123.314,
+    fiesta: "June 28",
+    nameOrigin: "Named after the 'Piapi' forest tree, famous for producing edible nuts abundant in early coastal groves.",
+    patronSaintTraditions: "Hosts the Bangakaton Festival every June 29th in honor of patron San Pedro (Saint Peter)."
+  },
+  {
+    barangay: "Poblacion 1 (Tinago)",
+    place_id: "ChIJkeMga9xuqzMRIugZC4xtjho",
+    address: "Poblacion 1 (Tinago), Dumaguete City, Negros Oriental",
+    latitude: 9.308,
+    longitude: 123.311,
+    fiesta: "May 1st Saturday",
+    nameOrigin: "Derived from 'Tago' ('to hide'). When watchmen spotted Moro pirate ships, they shouted 'Tago!' warning women and children to hide in coastal nipa palms.",
+    patronSaintTraditions: "Celebrates fiesta on the 1st Saturday of May in honor of Senior Santo Niño and the Sagrada Familia."
+  },
+  {
+    barangay: "Poblacion 2 (Upper Luke Wright)",
+    place_id: "ChIJp1sYFGZvqzMRFjo6ubO2XZI",
+    address: "Upper Luke Wright Street, Poblacion 2, Dumaguete City, Negros Oriental",
+    latitude: 9.309,
+    longitude: 123.308,
+    fiesta: "May 13",
+    nameOrigin: "Centrally located downtown area situated just north of the Dumaguete Public Market.",
+    patronSaintTraditions: "Honors patron Mary of Fatima (Our Lady of Fatima) with a fiesta every May 13th."
+  },
+  {
+    barangay: "Poblacion 3 (Business District)",
+    place_id: "ChIJdRHja95uqzMRNrWzlut7Ukg",
+    address: "15 Lorenzo, Manuel L. Teves Street, Poblacion 3, Dumaguete City, Negros Oriental",
+    latitude: 9.307,
+    longitude: 123.307,
+    fiesta: "November 25",
+    nameOrigin: "Also known as Colon Extension, housing Quezon Park, St. Catherine Cathedral, and Holy Child Hospital.",
+    patronSaintTraditions: "Celebrates on November 25th in conjunction with the city-wide fiesta for Saint Catherine of Alexandria."
+  },
+  {
+    barangay: "Poblacion 4 (Rizal Boulevard)",
+    place_id: "ChIJ7TV7VOduqzMRYdhfj7zTiGA",
+    address: "Bishop Epifanio Surban Street, Rizal Boulevard, Dumaguete City, Negros Oriental",
+    latitude: 9.306,
+    longitude: 123.311,
+    fiesta: "November 25",
+    nameOrigin: "Named after iconic Rizal Boulevard, serving as Dumaguete's scenic coastal window to the sea.",
+    patronSaintTraditions: "Joins city-wide celebration for Saint Catherine on Nov 25. Main venue for Buglasan Festival & Santa Cruzan."
+  },
+  {
+    barangay: "Poblacion 5 (Silliman Area)",
+    place_id: "ChIJzXp6vsdvqzMR8rYuQj6igUw",
+    address: "Perdices Street, Silliman Campus Area, Dumaguete City, Negros Oriental",
+    latitude: 9.311,
+    longitude: 123.307,
+    fiesta: "November 25",
+    nameOrigin: "Encompasses Silliman University campus; has the smallest resident population among all city barangays.",
+    patronSaintTraditions: "Celebrates November 25th in honor of city patron Saint Catherine of Alexandria."
+  },
+  {
+    barangay: "Poblacion 6 (Cambagroy)",
+    place_id: "ChIJ2wSrT9dvqzMRZPNkNfo0K0U",
+    address: "Twin Arcade Bldg, Perdices Street, Poblacion 6, Dumaguete City, Negros Oriental",
+    latitude: 9.312,
+    longitude: 123.306,
+    fiesta: "May Last Saturday",
+    nameOrigin: "Legend from 1898 American occupation: an American soldier named Roy befriended a local girl who cried 'Come Back Roy' upon his departure.",
+    patronSaintTraditions: "Shares city-wide St. Catherine devotion and holds specific barrio fiesta on the last Saturday of May."
+  },
+  {
+    barangay: "Poblacion 7 (Mangga)",
+    place_id: "ChIJJ2i_O-BuqzMRDRHIFziSIeU",
+    address: "Jose Pro Teves Street corner San Jose Ext., Dumaguete City, Negros Oriental",
+    latitude: 9.304,
+    longitude: 123.305,
+    fiesta: "January 4th Sunday",
+    nameOrigin: "Named after 'Mangga' (Mango). During the Spanish period, this was the sole district known for abundant mango harvests.",
+    patronSaintTraditions: "Celebrates on January 4th Sunday as well as city-wide Saint Catherine on November 25th."
+  },
+  {
+    barangay: "Poblacion 8 (Cervantes)",
+    place_id: "ChIJU-O5bd9uqzMRxJntHbFsF9k",
+    address: "J.P. Teves Street, Cervantes, Dumaguete City, Negros Oriental",
+    latitude: 9.308,
+    longitude: 123.306,
+    fiesta: "November 25",
+    nameOrigin: "Most populous downtown Poblacion barangay, bordered by Banica River along Cervantes Street.",
+    patronSaintTraditions: "Honors patron San Jose (Saint Joseph) on March 19th and April 5th."
+  },
+  {
+    barangay: "Pulantubig",
+    place_id: "ChIJk3hNi0lvqzMRdMibHTLmXC0",
+    address: "L. Rovira Road, Pulantubig, Dumaguete City, Negros Oriental",
+    latitude: 9.326,
+    longitude: 123.293,
+    fiesta: "May 15",
+    nameOrigin: "Translates to 'red water.' Named after an ancient red rock in the river that gives passing water a reddish hue.",
+    patronSaintTraditions: "Honors Saint Joseph (San Jose) as its patron."
+  },
+  {
+    barangay: "Tabuc-tubig",
+    place_id: "ChIJI1GFrdhuqzMReMEapjeaNxY",
+    address: "Tabuc-tubig, Dumaguete City, Negros Oriental",
+    latitude: 9.301,
+    longitude: 123.314,
+    fiesta: "May 3",
+    nameOrigin: "Descriptive name meaning 'across the water,' given by settlers north of the river to describe this southern bank.",
+    patronSaintTraditions: "Honors patron Santa Cruz (Holy Cross) with a fiesta every 4th Sunday of May."
+  },
+  {
+    barangay: "Taclobo",
+    place_id: "ChIJK49DOuBuqzMRURTtA4W-Nt8",
+    address: "Taclobo, Dumaguete City, Negros Oriental",
+    latitude: 9.311,
+    longitude: 123.294,
+    fiesta: "May 3",
+    nameOrigin: "From 'nag-taclob' ('shell is closed'). Originates from the loud closing sound of large ancient forest clam shells.",
+    patronSaintTraditions: "Honors Senior Santo Niño (Holy Child) with a fiesta every 3rd Sunday of January."
+  },
+  {
+    barangay: "Talay",
+    place_id: "ChIJ0e6QxVRvqzMRWE8N1LQSNEE",
+    address: "Talay, Dumaguete City, Negros Oriental",
+    latitude: 9.295,
+    longitude: 123.262,
+    fiesta: "May 19",
+    nameOrigin: "Visayan for 'line' or 'alignment.' Originates from Spanish-era firing squad execution alignments of captured bandits.",
+    patronSaintTraditions: "Honors San Isidro Labrador with annual fiesta celebrations on May 22nd."
+  }
+];

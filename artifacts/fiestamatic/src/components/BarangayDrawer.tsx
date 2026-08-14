@@ -27,7 +27,13 @@ export function BarangayDrawer({
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]" />
         <Drawer.Content className="bg-background flex flex-col rounded-t-[24px] h-[90%] fixed bottom-0 left-0 right-0 z-[70] shadow-2xl outline-none border-t border-border">
-          <div className="p-4 flex-1 overflow-y-auto pb-24 scrollbar-none">
+          <div
+            className="p-4 flex-1 overflow-y-auto scrollbar-none"
+            style={{
+              paddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px) + 2rem)",
+              scrollPaddingBottom: "calc(72px + env(safe-area-inset-bottom, 0px) + 2rem)",
+            }}
+          >
             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-6" />
             <div className="max-w-md mx-auto space-y-6">
               <div>

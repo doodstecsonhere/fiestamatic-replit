@@ -30,8 +30,8 @@ export function BarangayDrawer({
           <div
             className="p-4 flex-1 min-h-0 overflow-y-auto scrollbar-none"
             style={{
-              paddingBottom: "calc(144px + env(safe-area-inset-bottom, 0px))",
-              scrollPaddingBottom: "calc(144px + env(safe-area-inset-bottom, 0px))",
+              paddingBottom: "calc(176px + env(safe-area-inset-bottom, 0px))",
+              scrollPaddingBottom: "calc(176px + env(safe-area-inset-bottom, 0px))",
             }}
           >
             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted mb-6" />

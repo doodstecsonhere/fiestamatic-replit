@@ -16,7 +16,16 @@ export default function Home() {
     return BARANGAYS.map(b => {
       const date = getOrCreateFiestaDate(b.fiesta, currentYear);
       return { ...b, date, daysUntil: getDaysUntil(date) };
-    }).sort((a, b) => a.daysUntil - b.daysUntil);
+    }).sort((a, b) => {
+      const aIsPassed = a.daysUntil < 0;
+      const bIsPassed = b.daysUntil < 0;
+
+      if (aIsPassed !== bIsPassed) {
+        return aIsPassed ? 1 : -1;
+      }
+
+      return a.date.getTime() - b.date.getTime();
+    });
   }, [currentYear]);
 
   const filteredBarangays = useMemo(() => {

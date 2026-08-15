@@ -76,21 +76,21 @@ export function BarangayDrawer({
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            className="shrink-0 border-t border-border/60 bg-background/95 px-4 pt-3 backdrop-blur-md"
-            style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
-          >
-            <div className="max-w-md mx-auto">
-              <a
-                href={googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 px-4 rounded-xl font-bold text-base hover-elevate transition-transform active:scale-[0.98] shadow-md"
-              >
-                <Navigation2 className="w-5 h-5" />
-                Get Directions
-              </a>
+            <div
+              className="sticky bottom-0 z-10 -mx-4 mt-6 border-t border-border/60 bg-background/95 px-4 pt-3 backdrop-blur-md"
+              style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}
+            >
+              <div className="max-w-md mx-auto">
+                <a
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground py-4 px-4 rounded-xl font-bold text-base hover-elevate transition-transform active:scale-[0.98] shadow-md"
+                >
+                  <Navigation2 className="w-5 h-5" />
+                  Get Directions
+                </a>
+              </div>
             </div>
           </div>
         </Drawer.Content>

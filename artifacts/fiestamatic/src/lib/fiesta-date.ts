@@ -19,7 +19,7 @@ function getMonthIndex(month: string): number {
 
 /**
  * Parses fiesta string and returns the Date for the current year.
- * If the date has already passed today, returns next year's date.
+ * If the date has passed by more than 7 days, returns next year's date.
  */
 export function getOrCreateFiestaDate(fiestaString: string, currentYear: number): Date {
   const normalizedStr = fiestaString.trim();
@@ -33,7 +33,7 @@ export function getOrCreateFiestaDate(fiestaString: string, currentYear: number)
     const n = parseInt(nStr, 10);
     
     let date = findNthWeekday(currentYear, monthIdx, targetWeekday, n);
-    if (getDaysUntil(date) < 0) {
+    if (getDaysUntil(date) < -7) {
       date = findNthWeekday(currentYear + 1, monthIdx, targetWeekday, n);
     }
     return date;
@@ -47,7 +47,7 @@ export function getOrCreateFiestaDate(fiestaString: string, currentYear: number)
     const targetWeekday = getWeekdayIndex(weekday);
     
     let date = findLastWeekday(currentYear, monthIdx, targetWeekday);
-    if (getDaysUntil(date) < 0) {
+    if (getDaysUntil(date) < -7) {
       date = findLastWeekday(currentYear + 1, monthIdx, targetWeekday);
     }
     return date;
@@ -61,7 +61,7 @@ export function getOrCreateFiestaDate(fiestaString: string, currentYear: number)
     const day = parseInt(dayStr, 10);
     
     let date = new Date(currentYear, monthIdx, day);
-    if (getDaysUntil(date) < 0) {
+    if (getDaysUntil(date) < -7) {
       date = new Date(currentYear + 1, monthIdx, day);
     }
     return date;

@@ -18,4 +18,6 @@ React, TypeScript, Vite, Leaflet/OpenStreetMap, Express, PostgreSQL, Drizzle ORM
 
 This public repository preserves the original Replit implementation as a portfolio snapshot. It is no longer the primary development repository. The independent successor is maintained separately while the app is migrated away from Replit.
 
+**Original hosted build:** https://fiestamatic-fiesta-finder--doodstecson.replit.app/
+
 Sample community posts and platform-specific configuration are preserved as part of the original build.
